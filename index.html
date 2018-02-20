@@ -1,0 +1,106 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+
+  
+
+  <style type="text/css">
+    /* Always set the map height explicitly to define the size of the div
+ * element that contains the map. */
+
+#map {
+  height: 100%;
+  width: 100%
+}
+
+
+/* Optional: Makes the sample page fill the window. */
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+  </style>  
+</head>
+
+<body>
+  <input id="input" style="width:100%"></input>
+<div id="map"></div>
+<!-- Replace the value of the key parameter with your own API key. -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA353E9fWfMFVO12kBmJoo_n3MShymJdgU&libraries=places&callback=initMap" async defer></script>
+  
+<script type='text/javascript'>//<![CDATA[
+
+// This example requires the Places library. Include the libraries=places
+// parameter when you first load the API. For example:
+// <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+
+var map;
+var infowindow;
+var latitude = 41.7735978;
+var longitude = -88.12336309999999;
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+    latitude = position.coords.latitude;
+    longitude = position.coords.longitude;
+    console.log(latitude + "," + longitude);
+});
+    }
+}
+  var you = {
+    lat: 41.7735978,
+    lng: -88.123363
+  };
+function initMap() {
+  getLocation();
+}
+
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: you,
+    zoom: 15
+  });
+
+  infowindow = new google.maps.InfoWindow();
+  var service = new google.maps.places.PlacesService(map);
+  service.nearbySearch({
+    location: you,
+    radius: 50000,
+    type: ['resturant'],
+    name: "authentic chinese",
+  }, callback);
+}
+
+function callback(results, status) {
+  if (status === google.maps.places.PlacesServiceStatus.OK) {
+    for (var i = 0; i < results.length; i++) {
+      createMarker(results[i]);
+    }
+  }
+}
+
+function createMarker(place) {
+  var placeLoc = place.geometry.location;
+  var marker = new google.maps.Marker({
+    map: map,
+    position: place.geometry.location
+  });
+
+  google.maps.event.addListener(marker, 'click', function() {
+    infowindow.setContent('<a href="google.com">' + place.name);
+    infowindow.open(map, this);
+  });
+}
+
+//]]> 
+
+</script>
+</body>
+</html>
+
